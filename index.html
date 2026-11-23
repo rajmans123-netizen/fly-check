@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fly Check · can I carry this on the flight?</title>
+<meta name="description" content="Scan your power bank, a bottle or any pack and see if it can go in your cabin bag, your check-in bag, or neither, on flights in India. Free, and nothing is uploaded.">
+<meta name="theme-color" content="#F1F5FB">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* A boarding pass: white card on airport-sky blue, green for go, red for "leave it", amber for "it depends". */
+:root { --bg: #F1F5FB; --card: #FFFFFF; --ink: #0F1B2D; --soft: #5B6779; --line: #DDE4EE; --blue: #1D4ED8; --bluebg: #E6EEFF;
+  --yes: #15803D; --yesbg: #E3F5E9; --no: #C62828; --nobg: #FDE8E8; --amb: #A35C00; --ambbg: #FFF3D6;
+  --shadow: 0 1px 2px rgba(15,27,45,.06), 0 10px 28px rgba(15,27,45,.08); }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16.5px/1.5 'Sora', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 20px 16px 48px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand img { width: 36px; height: 36px; flex: none; }
+.brand b { font: 800 22px/1 'Sora', sans-serif; letter-spacing: -.02em; }
+h1 { margin: 18px 0 6px; font: 800 34px/1.06 'Sora', sans-serif; letter-spacing: -.035em; }
+.sub { margin: 0; color: var(--soft); font-size: 15.5px; }
+.big { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 60px; margin-top: 18px; border-radius: 16px; border: 0; background: var(--blue); color: #fff; font: 800 18px/1 'Sora', sans-serif; box-shadow: 0 8px 20px rgba(29,78,216,.28); }
+.big:active { transform: scale(.985); }
+.inapp { margin: 10px 2px 0; font-size: 13.5px; line-height: 1.4; color: #5c574f; background: #fff7df; border: 1px solid #f0dca0; border-radius: 12px; padding: 9px 12px; }
+.or { display: flex; gap: 8px; margin-top: 8px; }
+.or label { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 13px; border: 1.5px solid var(--line); background: var(--card); font-weight: 700; font-size: 14.5px; cursor: pointer; }
+.search { position: relative; margin-top: 18px; }
+.search input { width: 100%; height: 54px; border: 1.5px solid var(--line); background: var(--card); border-radius: 16px; padding: 0 16px 0 46px; font-size: 16px; outline: none; }
+.search input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px var(--bluebg); }
+.search svg { position: absolute; left: 16px; top: 17px; width: 20px; height: 20px; color: #8792A3; }
+.hits { display: grid; gap: 6px; margin-top: 8px; }
+.hit { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 1.5px solid var(--line); background: var(--card); border-radius: 14px; padding: 10px 12px; }
+.hit b { flex: 1; font-weight: 700; font-size: 15px; line-height: 1.25; }
+.hit .pair { display: flex; gap: 4px; }
+h2 { margin: 24px 0 8px; font: 800 12.5px/1.2 'Sora', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1.5px solid var(--line); background: var(--card); border-radius: 99px; padding: 7px 13px; font-size: 14px; font-weight: 700; }
+.pb { display: flex; gap: 8px; align-items: center; background: var(--card); border: 1.5px solid var(--line); border-radius: 16px; padding: 8px 8px 8px 14px; }
+.pb input { flex: 1; min-width: 0; border: 0; outline: 0; font-size: 18px; font-weight: 800; background: transparent; }
+.pb span { font-weight: 700; color: var(--soft); }
+.pb button { border: 0; background: var(--ink); color: #fff; border-radius: 11px; height: 42px; padding: 0 16px; font-weight: 800; }
+/* answer badges: a small one in lists, a big one in the result */
+.bd { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 26px; padding: 0 7px; border-radius: 8px; font-size: 12.5px; font-weight: 800; white-space: nowrap; }
+.bd.yes { background: var(--yesbg); color: var(--yes); } .bd.no { background: var(--nobg); color: var(--no); } .bd.limit, .bd.ask { background: var(--ambbg); color: var(--amb); }
+/* reading */
+.scan { margin-top: 18px; position: relative; border-radius: 18px; overflow: hidden; background: #000; box-shadow: var(--shadow); }
+.scan img { display: block; width: 100%; max-height: 60vh; object-fit: contain; opacity: .92; }
+.scan .bar { position: absolute; left: 0; right: 0; height: 80px; top: 0; background: linear-gradient(transparent, rgba(29,78,216,.35) 85%, #5B8CFF); border-bottom: 3px solid #5B8CFF; animation: sweep 1.5s ease-in-out infinite alternate; }
+@keyframes sweep { from { transform: translateY(-80px); } to { transform: translateY(calc(60vh - 10px)); } }
+.scan .say { position: absolute; left: 12px; right: 12px; bottom: 12px; background: rgba(15,27,45,.86); color: #fff; border-radius: 12px; padding: 10px 14px; font-weight: 700; }
+/* the answer */
+.ans { margin-top: 18px; background: var(--card); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; }
+.ans .top { padding: 16px 18px 14px; color: #fff; }
+.ans .top.yes { background: var(--yes); } .ans .top.no { background: var(--no); } .ans .top.amb { background: #B76A00; } .ans .top.mix { background: var(--blue); }
+.ans .top small { display: block; font-weight: 700; font-size: 13.5px; opacity: .9; }
+.ans .top b { display: block; margin-top: 2px; font: 800 27px/1.08 'Sora', sans-serif; letter-spacing: -.02em; }
+.bag { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; padding: 14px 18px; border-top: 1px solid var(--line); }
+.bag svg { width: 40px; height: 40px; }
+.bag b { display: block; font-weight: 800; font-size: 16px; }
+.bag p { margin: 1px 0 0; color: var(--soft); font-size: 14px; line-height: 1.35; }
+.bag .v { min-width: 64px; height: 40px; border-radius: 12px; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; padding: 0 10px; font-weight: 800; }
+.bag .v.yes { background: var(--yesbg); color: var(--yes); } .bag .v.no { background: var(--nobg); color: var(--no); } .bag .v.limit, .bag .v.ask { background: var(--ambbg); color: var(--amb); }
+.math { margin: 0 18px 14px; background: #F4F7FC; border-radius: 14px; padding: 12px 14px; }
+.math .eq { font-weight: 800; font-size: 18px; letter-spacing: -.01em; }
+.math .eq em { font-style: normal; color: var(--blue); }
+.meter { position: relative; height: 12px; margin: 26px 0 22px; border-radius: 99px; background: linear-gradient(90deg, var(--yes) 0 62.5%, #E0A100 62.5% 100%); }
+.meter .lbl { position: absolute; top: 16px; font-size: 11.5px; font-weight: 700; color: var(--soft); transform: translateX(-50%); white-space: nowrap; }
+.meter .lbl:first-child { transform: none; } .meter .lbl:nth-child(3) { transform: translateX(-100%); }
+.mnote { margin: 4px 0 0; font-size: 13.5px; color: var(--soft); }
+.meter .pin { position: absolute; top: -9px; width: 4px; height: 30px; border-radius: 2px; background: var(--ink); transform: translateX(-50%); }
+.meter .pin i { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); font: 800 12.5px/1 'Sora', sans-serif; font-style: normal; background: var(--ink); color: #fff; padding: 4px 7px; border-radius: 7px; white-space: nowrap; }
+.why { margin: 0; padding: 0 18px 16px; font-size: 15px; }
+.rules { margin: 0; padding: 0 18px 16px 38px; font-size: 14.5px; color: #2B3647; }
+.rules li { margin: 4px 0; }
+.tip { margin: 12px 0 0; background: var(--bluebg); border-radius: 14px; padding: 11px 14px; font-size: 14.5px; }
+.alts { margin-top: 12px; font-size: 14px; color: var(--soft); }
+.alts button { margin: 4px 4px 0 0; border: 1.5px solid var(--line); background: var(--card); border-radius: 99px; padding: 5px 11px; font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.acts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 14px; }
+.btn { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 48px; padding: 6px 10px; border-radius: 13px; border: 1.5px solid var(--line); background: var(--card); font-weight: 800; font-size: 14.5px; line-height: 1.15; }
+.btn.pri { background: var(--ink); color: #fff; border-color: var(--ink); }
+.read { margin-top: 12px; font-size: 13px; color: var(--soft); }
+.read summary { cursor: pointer; font-weight: 700; }
+.read pre { white-space: pre-wrap; word-break: break-word; background: var(--card); border-radius: 12px; padding: 10px 12px; font: 12.5px/1.45 ui-monospace, Menlo, monospace; }
+/* my bag */
+.mybag { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 6px 0; }
+.mybag .sum { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 14px 10px; border-bottom: 1px solid var(--line); }
+.mybag .row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; }
+.mybag .row b { flex: 1; font-size: 14.5px; font-weight: 700; line-height: 1.25; }
+.mybag .row small { display: block; color: var(--soft); font-weight: 600; font-size: 12.5px; }
+.mybag .row button { border: 0; background: none; color: #9AA4B2; font-size: 18px; width: 30px; }
+.mybag .clear { display: block; margin: 4px auto 6px; border: 0; background: none; color: var(--soft); font-weight: 700; font-size: 13px; text-decoration: underline; }
+.limits { margin-top: 26px; font-size: 13.5px; color: var(--soft); }
+.limits b { color: var(--ink); }
+.limits a { color: inherit; }
+footer { margin-top: 20px; text-align: center; font-size: 13px; color: var(--soft); }
+footer a { color: inherit; }
+/* the in-app camera */
+.camview { position: fixed; inset: 0; z-index: 90; background: #000; }
+.camview video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.guide { position: absolute; left: 8%; right: 8%; top: 24%; height: 36%; border-radius: 18px; box-shadow: 0 0 0 9999px rgba(0,0,0,.42); }
+.guide i { position: absolute; width: 34px; height: 34px; border: 5px solid #fff; }
+.guide i:nth-child(1) { left: -3px; top: -3px; border-right: 0; border-bottom: 0; border-radius: 18px 0 0 0; }
+.guide i:nth-child(2) { right: -3px; top: -3px; border-left: 0; border-bottom: 0; border-radius: 0 18px 0 0; }
+.guide i:nth-child(3) { left: -3px; bottom: -3px; border-right: 0; border-top: 0; border-radius: 0 0 0 18px; }
+.guide i:nth-child(4) { right: -3px; bottom: -3px; border-left: 0; border-top: 0; border-radius: 0 0 18px 0; }
+.guide .sweep { position: absolute; left: 0; right: 0; height: 4px; background: #5B8CFF; box-shadow: 0 0 18px 6px rgba(91,140,255,.6); top: 0; }
+.camhint { position: absolute; left: 16px; right: 16px; top: calc(24% - 60px); text-align: center; color: #fff; font-weight: 700; font-size: 16px; margin: 0; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+.camtop { position: absolute; left: 0; right: 0; top: 0; padding: calc(12px + env(safe-area-inset-top)) 14px 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.camtop button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(0,0,0,.45); color: #fff; font-size: 20px; font-weight: 800; }
+.camtop button.on { background: #FFE27A; color: #000; }
+.cambar { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 0 calc(28px + env(safe-area-inset-bottom)); display: flex; justify-content: center; }
+.shutter { width: 78px; height: 78px; border-radius: 50%; border: 5px solid #fff; background: var(--blue); box-shadow: 0 0 0 4px rgba(0,0,0,.25); }
+.shutter:active { transform: scale(.94); }
+.shutter:disabled { opacity: .6; }
+.zoombtn { position: absolute; left: calc(50% - 39px - 92px); top: 30px; width: 54px; height: 54px; border-radius: 50%; border: 0; background: rgba(0,0,0,.5); color: #fff; font-weight: 800; font-size: 16px; }
+.zoombtn.on { background: rgba(255,255,255,.92); color: var(--ink); }
+.focusring { position: fixed; width: 76px; height: 76px; margin: -38px 0 0 -38px; border: 3px solid #FFE27A; border-radius: 50%; pointer-events: none; z-index: 95; opacity: 0; }
+.focusring.go { animation: ring .9s ease-out; }
+@keyframes ring { 0% { transform: scale(1.4); opacity: 1; } 60% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+.toast { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 700; z-index: 99; max-width: calc(100% - 32px); text-align: center; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand"><img src="icon.svg" alt=""><b>Fly Check</b></div>
+
+  <section id="start">
+    <h1>Can I carry this on the flight?</h1>
+    <p class="sub">Scan your power bank, a bottle or any pack, or search an item. Cabin bag or check-in, by Indian airport rules. Free, and nothing is uploaded.</p>
+    <button class="big" id="scanBtn" type="button"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan an item</button>
+    <input type="file" id="cam" accept="image/*" capture="environment" hidden>
+    <p class="inapp" id="inapp" hidden>Opened from Instagram? For the live camera, tap <b>⋮</b> (top right) and <b>Open in Chrome</b> or <b>Open in Safari</b>. Or just tap Scan to take a photo.</p>
+    <div class="or"><label>Pick a photo of a label<input type="file" id="pick" accept="image/*" hidden></label></div>
+
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search: ghee, perfume, nail cutter…" autocomplete="off" aria-label="Search an item"></div>
+    <div class="hits" id="hits"></div>
+
+    <h2>Power bank</h2>
+    <div class="pb"><input id="mah" inputmode="numeric" placeholder="20000" aria-label="Power bank capacity in mAh"><span>mAh</span><button id="mahGo" type="button">Check</button></div>
+
+    <h2>People ask about</h2>
+    <div class="chips" id="chips"></div>
+
+    <div id="bagWrap" hidden><h2>My bag</h2><div class="mybag" id="mybag"></div></div>
+
+    <div class="limits">
+      <p><b>Where the rules come from:</b> BCAS's list of items banned on Indian flights (as published by Indian airports), DGCA's 2026 power bank rules, and IATA's battery limits. Checked 23 Nov 2026. <span id="srcs"></span></p>
+      <p><b>Honest limits:</b> airlines can be stricter than these rules, and the officer at security has the final word. When this says "ask", ask your airline. A blurry photo can misread a number: check the numbers it read.</p>
+    </div>
+  </section>
+
+  <section id="reading" hidden>
+    <div class="scan"><img id="photo" alt="The label"><div class="bar"></div><div class="say" id="readSay">Reading the label…</div></div>
+  </section>
+
+  <section id="result" hidden>
+    <div class="ans" id="ans"></div>
+    <div class="tip" id="tip" hidden></div>
+    <div class="alts" id="alts" hidden></div>
+    <div class="acts">
+      <button class="btn pri" id="addBtn" type="button">+ My bag</button>
+      <button class="btn" id="againBtn" type="button">Scan another</button>
+      <button class="btn" id="shareBtn" type="button">Share</button>
+    </div>
+    <details class="read" id="readWrap" hidden><summary>What it read</summary><pre id="readText"></pre></details>
+    <div id="bagWrap2" hidden><h2>My bag</h2><div class="mybag" id="mybag2"></div></div>
+  </section>
+
+  <footer>Fly Check · built with Claude by <a href="https://instagram.com/raj_triess">Raj Tries</a> · <a href="https://rajmans123-netizen.github.io/">more free apps</a></footer>
+</main>
+
+<div class="camview" id="camview" hidden>
+  <video id="video" playsinline muted autoplay></video>
+  <div class="guide" id="guide"><i></i><i></i><i></i><i></i></div>
+  <p class="camhint" id="camhint">Fill the box with the label · tap to focus</p>
+  <div class="camtop"><button id="camClose" type="button" aria-label="Close the camera">✕</button><button id="torch" type="button" aria-label="Flashlight" hidden>⚡</button></div>
+  <div class="cambar"><button class="zoombtn" id="zoom" type="button" hidden>2×</button><button class="shutter" id="shutter" type="button" aria-label="Scan"></button></div>
+</div>
+<div class="focusring" id="ring" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
