@@ -147,14 +147,14 @@ export function readBattery(text) {
   return { wh: Math.round(wh * 10) / 10, mah, v: v || 3.7, vGuess: !v, from };
 }
 export function checkBattery(b) {
-  const out = { id: 'powerbank', kind: 'battery', b, src: 'DIK', checkinNote: 'Never. If it\'s found, security pulls your bag.' };
+  const out = { id: 'powerbank', kind: 'battery', b, src: 'DIK', checkinNote: 'Never. Security will open your bag and take it out.' };
   if (!b) return { ...out, cabin: 'yes', checkin: 'no', head: 'Cabin bag only', cabinNote: 'Yes, if it\'s 100 Wh or less (most are).', why: 'Couldn\'t read the capacity, but most phone power banks (up to 26,800 mAh) are under the 100 Wh limit.' };
   if (b.wh <= 100) return { ...out, cabin: 'yes', checkin: 'no', head: 'Cabin bag only', cabinNote: 'Yes. Keep it with you.', why: `${b.wh} Wh is under the 100 Wh limit, so it can fly, but only in your cabin bag.` };
   if (b.wh <= 160) return { ...out, cabin: 'ask', checkin: 'no', head: 'Ask your airline first', cabinNote: 'Only with the airline\'s OK, at most two.', why: `${b.wh} Wh is over 100 Wh. Power banks from 100 to 160 Wh need the airline's OK, and at most two.` };
   return { ...out, cabin: 'no', checkin: 'no', head: 'Can\'t fly at all', cabinNote: 'No. Over 160 Wh can\'t fly.', why: `${b.wh} Wh is over 160 Wh. That's too big for any passenger flight.` };
 }
 export const BATTERY_RULES = [
-  'Never in the check-in bag. If it\'s found, security will pull your bag or call you to open it.',
+  'Never in the check-in bag. If it\'s in there, security opens your bag and takes it out in front of you.',
   'On Indian flights you can\'t use it to charge anything, and you can\'t charge it from the seat (DGCA, 2026).',
   'Keep it with you or under the seat, not in the overhead bin (DGCA, 2026).',
   'If the airline takes your cabin bag at the gate, take the power bank out first.',
