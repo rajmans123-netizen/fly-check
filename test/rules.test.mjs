@@ -60,7 +60,10 @@ ok(search('coconut').map(i => i.id).includes('copra') && search('coconut').map(i
 ok(search('bat')[0].id === 'bat', 'search bat');
 ok(search('phone')[0].id === 'devices', 'search phone');
 ok(search('zzzz').length === 0, 'no results');
-ok(verdict(byId('nailcutter')).cabin === 'ask', 'nail cutter = ask');
+ok(verdict(byId('nailcutter')).cabin === 'no' && verdict(byId('nailcutter')).checkin === 'yes', 'nail cutter: check-in only');
+ok(verdict(byId('coconut')).cabin === 'no' && verdict(byId('coconut')).checkin === 'no', 'fresh coconut: leave at home');
+v = r('Desiccated Coconut Powder 200 g'); ok(v.id === 'copra' && v.checkin === 'no', 'desiccated coconut is dry coconut: ' + v.id);
+ok(search('desiccated')[0].id === 'copra', 'search desiccated');
 ok(verdict(byId('perfume')).cabin === 'limit' && verdict(byId('perfume')).head === 'Up to 100 ml in the cabin', 'perfume without size');
 ok(classify('Lorem ipsum dolor').type === 'unknown', 'unknown text');
 for (const i of ITEMS) ok(i.kind === 'battery' || (i.cabin && i.checkin && i.why), 'every item has both answers and a why: ' + i.id);

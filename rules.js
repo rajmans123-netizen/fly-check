@@ -6,7 +6,8 @@
 //      it from the seat, power banks and spare lithium batteries in hand baggage only and not in overhead bins.
 //   I: IATA / ICAO lithium battery limits for passengers: spare batteries and power banks up to 100 Wh in cabin baggage; 100-160 Wh
 //      only with the airline's approval, at most two; over 160 Wh not on passenger planes.
-// Where sources disagree (nail cutters, fresh coconut, liquid medicines) the answer is "ask", never a guess.
+// Where sources disagree, the safe answer wins: nail cutters check-in only, coconut (fresh, dry or desiccated) not at all (Raj, 23 Nov 2026).
+// Liquid medicines and baby food stay "ask".
 // Verdicts: yes · no · limit (allowed within a limit: 100 ml in the cabin, 5 L in check-in) · ask (depends on the airline or needs approval)
 
 export const SOURCES = {
@@ -38,10 +39,10 @@ export const ITEMS = [
     why: 'Camphor catches fire easily. It\'s banned in both bags, even for puja.', src: 'K' },
   { id: 'crackers', name: 'Firecrackers, sparklers, party poppers', kind: 'other', w: ['firecracker', 'fire cracker', 'crackers', 'sparkler', 'phuljhadi', 'party popper', 'bang snaps', 'fireworks'],
     cabin: 'no', checkin: 'no', why: 'Explosives: banned in both bags.', src: 'K' },
-  { id: 'copra', name: 'Dry coconut (copra / khopra)', kind: 'solid', w: ['dry coconut', 'dried coconut', 'copra', 'kopra', 'khopra', 'khobra', 'sukha nariyal'],
-    cabin: 'no', checkin: 'no', why: 'Dry coconut is oily and can catch fire. BCAS banned it in both bags in 2022.', src: 'K' },
-  { id: 'coconut', name: 'Fresh coconut', kind: 'solid', w: ['coconut', 'nariyal'], cabin: 'ask', checkin: 'ask',
-    why: 'Dry coconut is banned. For fresh coconut the rules differ: ask your airline before you pack one.', src: 'K' },
+  { id: 'copra', name: 'Dry coconut (copra / khopra)', kind: 'solid', w: ['dry coconut', 'dried coconut', 'desiccated coconut', 'dessicated coconut', 'coconut powder', 'grated coconut', 'copra', 'kopra', 'khopra', 'khobra', 'sukha nariyal', 'nariyal burada', 'coconut flakes'],
+    cabin: 'no', checkin: 'no', why: 'Dry coconut is oily and can catch fire. BCAS banned it in both bags in 2022, and desiccated (powdered) coconut is dry coconut too.', src: 'K' },
+  { id: 'coconut', name: 'Fresh coconut', kind: 'solid', w: ['coconut', 'fresh coconut', 'nariyal'], cabin: 'no', checkin: 'no',
+    why: 'Leave coconuts at home: dry coconut is banned in both bags, and fresh ones get stopped too. Not worth the risk.', src: 'K' },
   { id: 'flammable', name: 'Paint, thinner, petrol, kerosene', kind: 'liquid', w: ['paint', 'thinner', 'petrol', 'kerosene', 'diesel', 'turpentine', 'spray paint'], cabin: 'no', checkin: 'no',
     why: 'Flammable liquids, paints and thinners are banned in both bags.', src: 'K' },
   { id: 'gas', name: 'Gas cylinder, butane, lighter refill', kind: 'other', w: ['gas cylinder', 'butane', 'lighter fluid', 'lighter refill', 'camping gas'], cabin: 'no', checkin: 'no',
@@ -95,8 +96,8 @@ export const ITEMS = [
   { id: 'knife', name: 'Knife (any size)', kind: 'other', w: ['knife', 'knives', 'penknife', 'pen knife', 'swiss knife', 'blade knife', 'chaku', 'chaaku'], cabin: 'no', checkin: 'yes',
     why: 'Knives with a blade of any length can\'t go in the cabin. Fine in check-in.', src: 'K' },
   { id: 'blades', name: 'Razor blades', kind: 'other', w: ['razor blade', 'razor blades', 'blades', 'blade'], cabin: 'no', checkin: 'yes', why: 'Loose razor blades can\'t go in the cabin. Fine in check-in.', src: 'K' },
-  { id: 'nailcutter', name: 'Nail cutter', kind: 'other', w: ['nail cutter', 'nail clipper', 'nail clippers', 'nailcutter'], cabin: 'ask', checkin: 'yes',
-    why: 'Sources disagree: many airports let it through, some take it, especially one with a little knife or file. Check-in is the safe place.', src: 'K' },
+  { id: 'nailcutter', name: 'Nail cutter', kind: 'other', w: ['nail cutter', 'nail clipper', 'nail clippers', 'nailcutter'], cabin: 'no', checkin: 'yes',
+    why: 'Security takes nail cutters out of cabin bags, especially ones with a little knife or file. Pack it in check-in.', src: 'K' },
   { id: 'needles', name: 'Knitting needles', kind: 'other', w: ['knitting needle', 'knitting needles', 'crochet'], cabin: 'no', checkin: 'yes', why: 'Not in the cabin bag. Fine in check-in.', src: 'K' },
   { id: 'tools', name: 'Screwdriver, hammer, tools', kind: 'other', w: ['screwdriver', 'screw driver', 'hammer', 'spanner', 'wrench', 'pliers', 'tool kit', 'toolkit', 'drill'], cabin: 'no', checkin: 'yes', why: 'Tools can\'t go in the cabin. Fine in check-in.', src: 'K' },
   { id: 'cutlery', name: 'Steel cutlery with sharp edges', kind: 'other', w: ['cutlery', 'steel knife', 'fork'], cabin: 'no', checkin: 'yes', why: 'Metal cutlery with sharp edges can\'t go in the cabin.', src: 'K' },
