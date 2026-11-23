@@ -1,6 +1,6 @@
 // Fly Check: can I carry this on a flight in India? Scan a power bank, a bottle or a pack (read in this page by ocr.js), or search.
 // The rules are in rules.js; nothing is sent anywhere.
-import { ITEMS, POPULAR, SOURCES, BATTERY_RULES, byId, search, verdict, checkBattery, classify } from './rules.js';
+import { ITEMS, POPULAR, SOURCES, BATTERY_RULES, byId, search, findItems, verdict, checkBattery, classify } from './rules.js';
 import { readText, warmUp } from './ocr.js';
 const $ = id => document.getElementById(id);
 const store = { get(k, d) { try { const v = localStorage.getItem('fc.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem('fc.' + k, JSON.stringify(v)); } catch { } } };
@@ -53,6 +53,15 @@ export function showResult(r, { name = '', text = '', alts = [] } = {}) {
     a.append(el('p', 'why', r.why));
     const ul = el('ul', 'rules'); for (const t of BATTERY_RULES) ul.append(el('li', '', t)); a.append(ul);
   } else a.append(el('p', 'why', r.why));
+  // a liquid picked from search (no size read): tap its size for a definite answer
+  const it = byId(r.id), sz = $('sizes'); sz.textContent = '';
+  sz.hidden = !(it && it.kind === 'liquid' && it.cabin === 'limit' && !r.size && !it.cabinNote);
+  if (!sz.hidden) {
+    sz.append(el('b', '', 'How big is the bottle or jar?'));
+    for (const [ml, label] of [[50, '50 ml'], [100, '100 ml'], [150, '150 ml'], [200, '200 ml'], [500, '500 ml'], [1000, '1 L'], [5000, '5 L']]) {
+      const b = el('button', '', label); b.type = 'button'; b.onclick = () => showResult(verdict(it, { ml, label }), { name: `${it.name} · ${label}`, text }); sz.append(b);
+    }
+  }
   $('tip').hidden = !r.tip; $('tip').textContent = r.tip || '';
   $('alts').hidden = !alts.length; $('alts').textContent = '';
   if (alts.length) { $('alts').append('Not this? It might be: '); for (const it of alts) { const b = el('button', '', it.name); b.type = 'button'; b.onclick = () => showResult(verdict(it, r.size), { text }); $('alts').append(b); } }
@@ -80,13 +89,17 @@ function renderBag() {
       const del = el('button', '', '×'); del.type = 'button'; del.setAttribute('aria-label', 'Remove ' + x.name); del.onclick = () => { S.bag.splice(i, 1); store.set('bag', S.bag); renderBag(); if (S.res) $('addBtn').textContent = inBag(S.res) ? '✓ In my bag' : '+ My bag'; };
       row.append(t, el('span', 'bd ' + x.cabin, '🎒 ' + tag(x, 'cabin', 1)), el('span', 'bd ' + x.checkin, '🧳 ' + tag(x, 'checkin', 1)), del); m.append(row);
     });
-    const c = el('button', 'clear', 'Clear my bag'); c.type = 'button'; c.onclick = () => { S.bag = []; store.set('bag', S.bag); renderBag(); $('addBtn').textContent = '+ My bag'; }; m.append(c);
+    const liquids = S.bag.filter(x => x.liquid && x.cabin !== 'no').length;
+    if (liquids >= 2) m.append(el('p', 'lnote', `All ${liquids} liquids in your cabin bag go together in one clear 1-litre bag.`));
+    const acts = el('div', 'bagacts'), sh = el('button', '', 'Share my bag ↗'); sh.type = 'button'; sh.onclick = shareBag;
+    const c = el('button', 'clear', 'Clear my bag'); c.type = 'button'; c.onclick = () => { S.bag = []; store.set('bag', S.bag); renderBag(); $('addBtn').textContent = '+ My bag'; };
+    acts.append(sh, c); m.append(acts);
   }
 }
 $('addBtn').onclick = () => {
   const r = S.res; if (!r) return; const key = keyOf(r);
   if (inBag(r)) { S.bag = S.bag.filter(x => x.key !== key); $('addBtn').textContent = '+ My bag'; }
-  else { S.bag.push({ key, name: S.name, head: r.head, cabin: r.cabin, checkin: r.checkin, checkinTag: r.checkinTag || null }); $('addBtn').textContent = '✓ In my bag'; toast('Added. Scan the next thing.'); }
+  else { S.bag.push({ key, name: S.name, head: r.head, cabin: r.cabin, checkin: r.checkin, checkinTag: r.checkinTag || null, liquid: r.kind === 'liquid' }); $('addBtn').textContent = '✓ In my bag'; toast('Added. Scan the next thing.'); }
   store.set('bag', S.bag); renderBag();
 };
 
@@ -101,13 +114,15 @@ function openItem(it) {
   showResult(verdict(it), { name: it.name });
 }
 $('q').addEventListener('input', () => {
-  const h = $('hits'); h.textContent = ''; const q = $('q').value;
+  $('unknown').hidden = true; const h = $('hits'); h.textContent = ''; const q = $('q').value;
   const found = search(q, 6); for (const it of found) h.append(hitButton(it));
   if (q.trim().length >= 3 && !found.length) h.append(el('p', 'sub', 'Not in the list yet. If it\'s a liquid, cream or gel: up to 100 ml in the cabin. Sharp, flammable or a battery? Ask your airline.'));
 });
 for (const [id, label] of POPULAR) { const it = byId(id), b = el('button', '', label); b.type = 'button'; b.onclick = () => openItem(it); $('chips').append(b); }
 function checkMah() {
-  const mah = parseInt(String($('mah').value).replace(/[^\d]/g, ''), 10);
+  const raw = String($('mah').value).toLowerCase().replace(/,/g, '').trim(), n = parseFloat(raw);
+  if (/wh/.test(raw) && !/mah/.test(raw) && n > 0 && n < 600) { const b = { wh: Math.round(n * 10) / 10, mah: null, v: 3.7, vGuess: false, from: 'wh' }; showResult(checkBattery(b), { name: `Power bank · ${b.wh} Wh` }); return; }
+  const mah = Math.round(/\d\s*k\b/.test(raw) ? n * 1000 : n);     // "20k" = 20,000 mAh
   if (!(mah >= 500 && mah <= 200000)) { toast('Type the mAh printed on it, like 10000 or 20000.'); $('mah').focus(); return; }
   const b = { wh: Math.round(mah * 3.7 / 100) / 10, mah, v: 3.7, vGuess: true, from: 'mah' };
   showResult(checkBattery(b), { name: `Power bank · ${fmt(mah)} mAh` });
@@ -127,7 +142,16 @@ async function readAndAnswer(blob, progress) {
 function answer({ c, text }) {
   if (c.type === 'battery') { const b = c.result.b; showResult(c.result, { name: b?.mah ? `Power bank · ${fmt(b.mah)} mAh` : b ? `Power bank · ${b.wh} Wh` : 'Power bank', text }); return; }
   if (c.type === 'item') { showResult(c.result, { name: c.item.name + (c.result.size ? ` · ${c.result.size.label}` : ''), text, alts: c.also }); return; }
-  show('start'); $('q').value = ''; $('q').focus(); toast("Couldn't tell what that is. Search it by name."); $('hits').textContent = '';
+  showUnknown(text);
+}
+function showUnknown(text) {
+  show('start'); $('q').value = ''; $('hits').textContent = '';
+  const u = $('unknown'); u.textContent = ''; u.hidden = false;
+  u.append(el('b', '', "Couldn't tell what that is"), el('span', '', 'Try a closer photo of the name or the ml, or search it. '));
+  const guesses = findItems(text, 4);
+  if (guesses.length) { u.append(el('br'), 'Did you mean: '); for (const it of guesses) { const b = el('button', '', it.name); b.type = 'button'; b.onclick = () => { u.hidden = true; openItem(it); }; u.append(b); } }
+  if (text) { const d = el('details'); d.append(el('summary', '', 'What it read'), el('pre', '', text)); u.append(d); }
+  window.scrollTo({ top: u.getBoundingClientRect().top + scrollY - 120, behavior: 'smooth' });
 }
 async function fromPhoto(file) {
   show('reading'); $('photo').src = URL.createObjectURL(file); $('readSay').textContent = 'Getting the reader ready…';
@@ -136,13 +160,22 @@ async function fromPhoto(file) {
 }
 
 // ---------------------------------------------------------------- share
-$('shareBtn').onclick = async () => {
-  const r = S.res; if (!r) return; const link = location.origin + location.pathname.replace(/index\.html$/, '');
-  const word = v => ({ yes: 'yes', no: 'no', limit: 'up to 100 ml', ask: 'ask the airline' })[v];
-  const text = `Fly Check: ${S.name} → ${r.head.toUpperCase()}\nCabin bag: ${word(r.cabin)} · Check-in: ${word(r.checkin)}\n\nCheck your bag free before you fly: ${link}`;
+const LINK = () => location.origin + location.pathname.replace(/index\.html$/, '');
+async function shareText(text) {
   if (navigator.share) { try { await navigator.share({ text }); return; } catch (e) { if (e.name === 'AbortError') return; } }
   try { await navigator.clipboard.writeText(text); toast('Copied. Paste it in your chat.'); return; } catch { }
   window.prompt('Copy this and send it:', text);
+}
+function shareBag() {
+  const g = { 'Cabin bag': [], 'Check-in bag': [], 'Leave at home': [], 'Ask the airline': [] };
+  for (const x of S.bag) (x.cabin === 'no' && x.checkin === 'no' ? g['Leave at home'] : x.cabin === 'ask' || x.checkin === 'ask' ? g['Ask the airline'] : x.cabin === 'no' ? g['Check-in bag'] : g['Cabin bag']).push(x.name);
+  const body = Object.entries(g).filter(([, v]) => v.length).map(([k, v]) => `${k}:\n${v.map(n => '• ' + n).join('\n')}`).join('\n\n');
+  shareText(`My bag, checked with Fly Check ✈️\n\n${body}\n\nCheck yours free before you fly: ${LINK()}`);
+}
+$('shareBtn').onclick = async () => {
+  const r = S.res; if (!r) return;
+  const word = (v, k) => v === 'limit' && k === 'checkin' ? (r.checkinTag || 'within the limit') : ({ yes: 'yes', no: 'no', limit: 'up to 100 ml', ask: 'ask the airline' })[v];
+  shareText(`Fly Check: ${S.name} → ${r.head.toUpperCase()}\nCabin bag: ${word(r.cabin, 'cabin')} · Check-in: ${word(r.checkin, 'checkin')}\n\nCheck your bag free before you fly: ${LINK()}`);
 };
 
 // ---------------------------------------------------------------- the in-app camera (from Veg Check): 2x zoom, tap to focus, sharpest frame

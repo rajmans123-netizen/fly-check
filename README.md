@@ -12,6 +12,6 @@ Scan your power bank, a bottle or any pack (or search an item) and see if it can
 
 **Sources:** BCAS's indicative list of prohibited items (as published by Indian airports), DGCA's 2026 advisory on power banks, IATA's lithium battery limits. Checked 23 Nov 2026. Airlines can be stricter, and security has the final word.
 
-`node test/rules.test.mjs` runs 95 checks on made-up labels, including OCR mistakes.
+`node test/rules.test.mjs` runs 100+ checks on made-up labels, including OCR mistakes.
 
 Built with Claude by [Raj Tries](https://instagram.com/raj_triess). MIT licensed.

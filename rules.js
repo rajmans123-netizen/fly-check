@@ -25,7 +25,7 @@ export const ITEMS = [
   { id: 'spare', name: 'Spare lithium battery', kind: 'battery', w: ['spare battery', 'laptop battery', 'camera battery', 'lithium battery', 'li-ion battery', 'li-ion', 'lithium ion', 'li-polymer', '18650'], src: 'DIK',
     note: 'The battery inside your phone, laptop or camera is fine. This is about spare ones.' },
   // ---- devices
-  { id: 'devices', name: 'Phone, laptop, tablet, camera', kind: 'device', w: ['phone', 'mobile', 'laptop', 'tablet', 'ipad', 'camera', 'earbuds', 'airpods', 'headphones', 'smartwatch', 'kindle', 'trimmer'],
+  { id: 'devices', name: 'Phone, laptop, tablet, camera', kind: 'device', w: ['phone', 'mobile', 'laptop', 'ipad', 'camera', 'earbuds', 'earphones', 'airpods', 'headphones', 'smartwatch', 'kindle', 'trimmer', 'charger', 'adapter', 'speaker'],
     cabin: 'yes', checkin: 'limit', checkinTag: 'If off', checkinNote: 'Only switched fully off and well padded. Better in your cabin bag.',
     why: 'Devices with their battery inside can fly. Laptops come out of the bag at the X-ray.', src: 'I' },
   { id: 'ecig', name: 'E-cigarette / vape', kind: 'other', w: ['e-cigarette', 'e cigarette', 'ecigarette', 'vape', 'vaporizer', 'vapouriser', 'juul'],
@@ -53,13 +53,14 @@ export const ITEMS = [
   { id: 'perfume', name: 'Perfume, deo, body spray', kind: 'liquid', w: ['perfume', 'parfum', 'eau de', 'cologne', 'deodorant', 'deo', 'body spray', 'antiperspirant', 'attar', 'ittar', 'itra', 'fragrance'],
     cabin: 'limit', checkin: 'yes', why: LIQ, src: 'K' },
   { id: 'toiletries', name: 'Shampoo, lotion, toothpaste, sanitizer', kind: 'liquid',
-    w: ['shampoo', 'conditioner', 'lotion', 'moisturiser', 'moisturizer', 'sunscreen', 'sunblock', 'face wash', 'facewash', 'body wash', 'shower gel', 'toothpaste', 'hair oil', 'hair gel', 'serum', 'sanitizer', 'sanitiser', 'mouthwash', 'lens solution', 'aloe vera gel', 'cream', 'shaving foam', 'shaving gel', 'hair spray', 'liquid soap'],
+    w: ['shampoo', 'conditioner', 'lotion', 'moisturiser', 'moisturizer', 'sunscreen', 'sunblock', 'face wash', 'facewash', 'body wash', 'shower gel', 'toothpaste', 'hair oil', 'hair gel', 'serum', 'sanitizer', 'sanitiser', 'mouthwash', 'lens solution', 'aloe vera gel', 'cream', 'face cream', 'hand cream', 'shaving foam', 'shaving gel', 'hair spray', 'liquid soap', 'foundation', 'mascara', 'lip gloss', 'nail polish', 'repellent cream', 'gel', 'ointment', 'balm', 'vaseline', 'petroleum jelly', 'vaporub', 'vapourub'],
     cabin: 'limit', checkin: 'yes', why: LIQ, src: 'K' },
-  { id: 'water', name: 'Water bottle', kind: 'liquid', w: ['water bottle', 'drinking water', 'mineral water', 'packaged drinking water', 'water'], cabin: 'limit', checkin: 'yes',
+  { id: 'water', name: 'Water bottle', kind: 'liquid', w: ['water bottle', 'drinking water', 'mineral water', 'packaged drinking water', 'water', 'bottle', 'paani', 'pani'], cabin: 'limit', checkin: 'yes',
+    head: 'Carry it empty', cabinNote: 'Empty only. Fill it after security.',
     why: 'A full bottle won\'t pass security. Carry it empty and fill it after security.', src: 'K' },
   { id: 'ghee', name: 'Ghee', kind: 'liquid', w: ['ghee', 'cow ghee', 'desi ghee', 'clarified butter'], cabin: 'limit', checkin: 'limit', checkinMax: 5000, checkinTag: '≤5 kg', checkinNote: 'Up to 5 kg / 5 litres, sealed.',
     why: 'Ghee counts as a liquid at security. Up to 100 ml in the cabin; up to 5 kg in check-in.', src: 'K' },
-  { id: 'oil', name: 'Coconut oil, cooking oil', kind: 'liquid', w: ['coconut oil', 'cooking oil', 'mustard oil', 'sunflower oil', 'groundnut oil', 'olive oil', 'til oil', 'sesame oil', 'edible oil', 'oil'],
+  { id: 'oil', name: 'Coconut oil, cooking oil', kind: 'liquid', w: ['coconut oil', 'cooking oil', 'mustard oil', 'sunflower oil', 'groundnut oil', 'olive oil', 'til oil', 'sesame oil', 'edible oil', 'oil', 'tel', 'sarson tel'],
     cabin: 'limit', checkin: 'limit', checkinMax: 5000, checkinTag: '≤5 L', checkinNote: 'Up to 5 litres, sealed.', why: 'Oil is a liquid: up to 100 ml in the cabin. BCAS allows up to 5 litres of coconut oil in check-in.', src: 'K' },
   { id: 'pickle', name: 'Pickle (achar)', kind: 'liquid', w: ['pickle', 'achar', 'achaar', 'aachar'], cabin: 'limit', checkin: 'yes', checkinNote: 'Yes, in a sealed, leak-proof jar.',
     why: 'Pickle is oily, so it counts as a liquid in the cabin: 100 ml at most. Pack bigger jars in check-in, sealed in a plastic bag.', src: 'K' },
@@ -67,7 +68,7 @@ export const ITEMS = [
     cabin: 'limit', checkin: 'yes', why: 'Anything you can spread or pour counts as a liquid at security: 100 ml per jar in the cabin.', src: 'K' },
   { id: 'syrupsweets', name: 'Rasgulla, gulab jamun (sweets in syrup)', kind: 'liquid', w: ['rasgulla', 'rasagola', 'gulab jamun', 'rasmalai', 'ras malai', 'sweets in syrup', 'jamun', 'angoori'],
     cabin: 'limit', checkin: 'yes', checkinNote: 'Yes, in a sealed tin.', why: 'The syrup counts as a liquid, so a tin of rasgulla won\'t pass in the cabin. Dry sweets are fine.', src: 'K' },
-  { id: 'alcohol', name: 'Alcohol (whisky, rum, wine, beer)', kind: 'liquid', w: ['whisky', 'whiskey', 'rum', 'vodka', 'gin', 'wine', 'beer', 'brandy', 'liquor', 'alcohol', 'scotch', 'tequila'],
+  { id: 'alcohol', name: 'Alcohol (whisky, rum, wine, beer)', kind: 'liquid', w: ['whisky', 'whiskey', 'rum', 'vodka', 'gin', 'wine', 'beer', 'brandy', 'liquor', 'alcohol', 'scotch', 'tequila', 'daru', 'daaru', 'sharab', 'sharaab'],
     cabin: 'limit', checkin: 'limit', checkinMax: 5000, checkinTag: '≤5 L', checkinNote: 'Up to 5 litres, sealed.', why: 'Up to 100 ml in the cabin (duty-free bought after security comes sealed in its own bag). Up to 5 litres in check-in.', src: 'K' },
   { id: 'medsliquid', name: 'Liquid medicine, eye drops, insulin', kind: 'liquid', w: ['cough syrup', 'liquid medicine', 'medicine syrup', 'eye drops', 'eye drop', 'insulin', 'nasal spray', 'inhaler'],
     cabin: 'ask', checkin: 'yes', why: 'Medicines you need on the flight are usually allowed over 100 ml. Carry the prescription and show it at security.', src: 'K' },
@@ -76,9 +77,9 @@ export const ITEMS = [
   { id: 'liquid', name: 'A liquid, cream or gel', kind: 'liquid', w: ['liquid', 'gel'], cabin: 'limit', checkin: 'yes', why: LIQ, src: 'K' },
   // ---- solid food
   { id: 'spices', name: 'Spices, masala, chilli powder', kind: 'solid',
-    w: ['spices', 'spice', 'masala', 'chilli', 'chili', 'mirchi', 'mirch', 'haldi', 'turmeric', 'garam masala', 'chilli powder', 'red chilli', 'pepper powder', 'kali mirch', 'jeera', 'cumin', 'dhania', 'coriander powder', 'hing', 'asafoetida', 'sambar powder', 'chaat masala', 'pav bhaji masala', 'biryani masala', 'cardamom', 'elaichi', 'cloves', 'laung', 'cinnamon', 'dalchini'],
+    w: ['spices', 'spice', 'masala', 'chilli', 'chili', 'mirchi', 'mirch', 'haldi', 'turmeric', 'garam masala', 'chilli powder', 'red chilli', 'pepper powder', 'kali mirch', 'jeera', 'cumin', 'dhania', 'coriander powder', 'hing', 'asafoetida', 'sambar powder', 'chaat masala', 'pav bhaji masala', 'biryani masala', 'cardamom', 'elaichi', 'cloves', 'laung', 'cinnamon', 'dalchini', 'saffron', 'kesar', 'saunf', 'fennel', 'ajwain', 'methi', 'rai', 'mustard seeds', 'black pepper', 'pepper', 'tej patta', 'bay leaf', 'star anise'],
     cabin: 'no', checkin: 'yes', why: 'BCAS bans all spices in the cabin bag, powdered or whole, chilli included. Pack them in check-in.', src: 'K' },
-  { id: 'powders', name: 'Salt, sugar, atta, besan', kind: 'solid', w: ['salt', 'iodised salt', 'iodized salt', 'sugar', 'atta', 'flour', 'maida', 'besan', 'rice flour', 'sooji', 'suji', 'rava', 'baking soda', 'jaggery', 'gud', 'cornflour'],
+  { id: 'powders', name: 'Salt, sugar, atta, besan', kind: 'solid', w: ['salt', 'iodised salt', 'iodized salt', 'sugar', 'atta', 'flour', 'maida', 'besan', 'rice flour', 'sooji', 'suji', 'rava', 'baking soda', 'jaggery', 'gud', 'cornflour', 'namak', 'cheeni', 'chini', 'shakkar', 'powder'],
     cabin: 'yes', checkin: 'yes',
     why: 'They\'re not on BCAS\'s banned list. White powders can get a second look at security, so keep them sealed in the shop pack.',
     tip: 'Flying to the US, Australia or New Zealand? Powders over 350 ml go in check-in there.', src: 'K' },
@@ -87,7 +88,7 @@ export const ITEMS = [
   { id: 'tea', name: 'Tea, coffee powder', kind: 'solid', w: ['tea', 'chai', 'chai patti', 'coffee', 'coffee powder', 'filter coffee', 'instant coffee', 'green tea'], cabin: 'yes', checkin: 'yes',
     why: 'Dry tea and coffee are fine in both bags. A filled flask isn\'t: that\'s a liquid.', src: 'K' },
   { id: 'dryfood', name: 'Namkeen, chips, biscuits, dry fruits, mithai', kind: 'solid',
-    w: ['namkeen', 'bhujia', 'chips', 'wafers', 'biscuits', 'cookies', 'dry fruits', 'almonds', 'badam', 'cashew', 'kaju', 'raisins', 'kishmish', 'nuts', 'mithai', 'laddoo', 'ladoo', 'barfi', 'kaju katli', 'chocolate', 'cake', 'bread', 'thepla', 'khakhra', 'chakli', 'chikki', 'snacks', 'sweets'],
+    w: ['namkeen', 'bhujia', 'chips', 'wafers', 'biscuits', 'cookies', 'dry fruits', 'almonds', 'badam', 'cashew', 'kaju', 'raisins', 'kishmish', 'nuts', 'mithai', 'laddoo', 'ladoo', 'barfi', 'kaju katli', 'chocolate', 'cake', 'bread', 'thepla', 'khakhra', 'chakli', 'chikki', 'snacks', 'sweets', 'tiffin', 'homemade food', 'roti', 'chapati', 'paratha', 'poha', 'sandwich', 'maggi', 'instant noodles', 'cereal', 'muesli', 'makhana'],
     cabin: 'yes', checkin: 'yes', why: 'Dry food is fine in both bags. Anything with gravy or syrup counts as a liquid in the cabin.', src: 'K' },
   { id: 'fruit', name: 'Fresh fruit', kind: 'solid', w: ['fruit', 'fruits', 'mango', 'apple', 'banana', 'orange', 'grapes', 'chikoo', 'guava'], cabin: 'yes', checkin: 'yes',
     why: 'Fine on flights within India.', tip: 'Flying abroad? Many countries don\'t let fresh fruit through customs.', src: 'K' },
@@ -104,6 +105,10 @@ export const ITEMS = [
   { id: 'bat', name: 'Cricket bat, hockey stick', kind: 'other', w: ['cricket bat', 'bat', 'hockey stick', 'baseball bat'], cabin: 'no', checkin: 'yes', why: 'Sports bats can\'t go in the cabin. Check it in.', src: 'K' },
   { id: 'darts', name: 'Darts, martial arts gear', kind: 'other', w: ['darts', 'dart', 'nunchaku', 'nunchucks'], cabin: 'no', checkin: 'yes', why: 'Not in the cabin bag. Fine in check-in.', src: 'K' },
   // ---- other
+  { id: 'meds', name: 'Medicines (tablets, capsules)', kind: 'solid', w: ['medicine', 'medicines', 'tablet', 'tablets', 'capsule', 'capsules', 'dawai', 'dawa', 'paracetamol', 'vitamins'], cabin: 'yes', checkin: 'yes',
+    why: 'Tablets and capsules are fine in both bags. Keep them in their strips, and carry the prescription for anything strong. Liquid medicines are a separate item.', src: 'K' },
+  { id: 'makeup', name: 'Lipstick, lip balm, kajal (solid make-up)', kind: 'solid', w: ['lipstick', 'lip balm', 'lipbalm', 'chapstick', 'kajal', 'kohl', 'compact', 'face powder', 'eyeliner pencil', 'solid perfume', 'deodorant stick', 'roll on'],
+    cabin: 'yes', checkin: 'yes', why: 'Solid make-up is fine in both bags. Liquid foundation, mascara and lip gloss count as liquids: 100 ml each in the cabin.', src: 'K' },
   { id: 'cigarettes', name: 'Cigarettes', kind: 'other', w: ['cigarette', 'cigarettes', 'bidi', 'beedi'], cabin: 'yes', checkin: 'yes',
     why: 'You can carry them, but not the lighter or matches. Smoking on board is banned.', src: 'K' },
   { id: 'glue', name: 'Glue, Fevikwik, adhesives', kind: 'other', w: ['fevikwik', 'feviquick', 'super glue', 'superglue', 'adhesive', 'glue', 'fevicol'], cabin: 'ask', checkin: 'no',
@@ -112,11 +117,12 @@ export const ITEMS = [
 ];
 // words that name the thing in a search, but on a label mean something else ("Customer care phone", "Protein 5 g" in the nutrition
 // table, "stainless steel blades" on a trimmer): searched, never matched on a scanned label
-const SEARCH_ONLY = new Set(['phone', 'mobile', 'camera', 'laptop', 'tablet', 'ipad', 'earbuds', 'airpods', 'headphones', 'smartwatch', 'kindle', 'trimmer',
+const SEARCH_ONLY = new Set(['phone', 'mobile', 'camera', 'laptop', 'tablet', 'tablets', 'ipad', 'earbuds', 'earphones', 'airpods', 'headphones', 'smartwatch', 'kindle', 'trimmer', 'charger', 'adapter', 'speaker',
+  'tel', 'bottle', 'pani', 'paani', 'powder', 'rai', 'pepper', 'compact', 'medicine', 'medicines', 'capsule', 'capsules', 'cereal',
   'bat', 'blade', 'blades', 'fork', 'dart', 'darts', 'water', 'oil', 'protein', 'gel', 'liquid', 'parfum', 'fragrance', 'mah', 'wh']);
 // things that are often an ingredient of something else (oil in pickle, butane in a deo, salt in namkeen): on a label they only win
 // when nothing more specific is named
-const WEAK = new Set(['coconut', 'oil', 'water', 'spices', 'powders', 'alcohol', 'liquid', 'fruit', 'gas', 'spread', 'flammable']);
+const WEAK = new Set(['coconut', 'oil', 'water', 'spices', 'powders', 'alcohol', 'liquid', 'fruit', 'gas', 'spread', 'flammable', 'meds']);
 export const POPULAR = [['powerbank', 'Power bank'], ['perfume', 'Perfume'], ['ghee', 'Ghee'], ['spices', 'Masala'], ['powders', 'Salt & sugar'], ['pickle', 'Achar'], ['copra', 'Dry coconut'], ['lighter', 'Lighter'], ['nailcutter', 'Nail cutter'], ['protein', 'Protein powder'], ['bat', 'Cricket bat'], ['syrupsweets', 'Rasgulla']];
 export const byId = id => ITEMS.find(i => i.id === id);
 
@@ -131,11 +137,12 @@ const num = s => parseFloat(String(s).replace(/,/g, '').replace(/\s+/g, ''));
 export function readBattery(text) {
   const t = cleanNumbers(text);
   const whs = [...t.matchAll(/(\d{1,3}(?:[.,]\d{1,2})?)\s*W\s*h\b/gi)].filter(m => !/m\s*$/i.test(t.slice(Math.max(0, m.index - 1), m.index))).map(m => num(m[1].replace(',', '.'))).filter(v => v >= 1 && v <= 600);
-  const mahs = [...t.matchAll(/(\d{1,3}(?:[,.\s]\d{3})+|\d{3,6})\s*m\s*A\s*[hH]/g)].map(m => num(m[1].replace(/[.\s]/g, ','))).filter(v => v >= 300 && v <= 200000);
+  const mahs = [...t.matchAll(/(\d{1,3}(?:[,.\s]\d{3})+|\d{3,6})\s*m\s*a\s*h/gi)].map(m => num(m[1].replace(/[.\s]/g, ','))).filter(v => v >= 300 && v <= 200000);
   const volts = [...t.matchAll(/(\d(?:[.,]\d{1,2})?)\s*V(?![a-z])/gi)].map(m => num(m[1].replace(',', '.'))).filter(v => v >= 3.0 && v <= 4.45);
   const mah = mahs.length ? Math.max(...mahs) : null, v = volts.length ? Math.max(...volts) : null;
   let wh = whs.length ? Math.max(...whs) : null, from = 'wh';
-  if (mah && (!wh || wh < mah * 3.0 / 1000 * 0.5)) { wh = mah * (v || 3.7) / 1000; from = 'mah'; }   // a stated Wh far below mAh × 3 V is a misread
+  // a printed Wh that doesn't fit the mAh (174 for 74, 7.4 for 74) is a misread: work it out from the mAh instead
+  if (mah) { const est = mah * (v || 3.7) / 1000; if (!wh || wh < est * 0.5 || wh > est * 1.6) { wh = est; from = 'mah'; } }
   if (!wh) return null;
   return { wh: Math.round(wh * 10) / 10, mah, v: v || 3.7, vGuess: !v, from };
 }
@@ -187,7 +194,14 @@ export function labelItems(text, max = 4) {
 export function search(q, max = 8) {
   const s = String(q || '').toLowerCase().trim(); if (!s) return [];
   const exact = findItems(s, max); const seen = new Set(exact.map(i => i.id)); const out = [...exact];
-  for (const i of ITEMS) { if (seen.has(i.id)) continue; if (i.name.toLowerCase().includes(s) || i.w.some(w => w.startsWith(s) || (s.length >= 3 && w.includes(s)))) { out.push(i); seen.add(i.id); } if (out.length >= max) break; }
+  // then by how well the start matches: the item's own name first ("nail" -> Nail cutter before nail polish), then any of its words
+  const more = [];
+  for (const i of ITEMS) {
+    if (seen.has(i.id)) continue; const nm = i.name.toLowerCase();
+    const sc = nm.startsWith(s) ? 4 : i.w.some(w => w.startsWith(s)) ? 3 : nm.includes(s) ? 2 : (s.length >= 3 && i.w.some(w => w.includes(s))) ? 1 : 0;
+    if (sc) more.push({ i, sc });
+  }
+  more.sort((x, y) => y.sc - x.sc); out.push(...more.map(m => m.i));
   return out.slice(0, max);
 }
 
@@ -196,14 +210,15 @@ export function verdict(item, size) {
   if (item.kind === 'battery') return checkBattery(size?.battery || null);
   const r = { id: item.id, kind: item.kind, name: item.name, cabin: item.cabin, checkin: item.checkin, why: item.why, tip: item.tip, src: item.src, size: size || null,
     cabinNote: null, checkinNote: item.checkinNote || null, checkinTag: item.checkinTag || null };
-  if (item.kind === 'liquid' && item.cabin === 'limit') {
+  if (item.cabinNote) r.cabinNote = item.cabinNote;
+  else if (item.kind === 'liquid' && item.cabin === 'limit') {
     if (size?.ml > 100) { r.cabin = 'no'; r.cabinNote = `${size.label} is more than 100 ml. Put it in check-in.`; }
     else if (size?.ml) { r.cabin = 'yes'; r.cabinNote = `${size.label} is within 100 ml. Put it in your clear 1-litre bag.`; }
     else r.cabinNote = 'Only if the bottle is 100 ml or less, in your clear 1-litre bag.';
   }
   if (item.checkinMax && size?.ml > item.checkinMax) { r.checkin = 'no'; r.checkinNote = `${size.label} is over the ${item.checkinMax / 1000} kg / litre limit.`; }
   else if (item.checkinMax && size?.ml && item.checkin === 'limit') { r.checkin = 'yes'; }
-  r.head = headOf(r); return r;
+  r.head = item.head || headOf(r); return r;
 }
 export function headOf(r) {
   const c = r.cabin, k = r.checkin;
@@ -220,7 +235,7 @@ export function classify(text) {
   const t = String(text || '');
   const b = readBattery(t);
   const batteryWords = /power\s*bank|powerbank|li[-\s]?ion|lithium|li[-\s]?polymer|\bmah\b|rated capacity|battery capacity|portable charger/i.test(cleanNumbers(t));
-  if (b && (batteryWords || b.mah)) return { type: 'battery', result: checkBattery(b) };
+  if (b && (batteryWords || b.mah || b.from === 'wh')) return { type: 'battery', result: checkBattery(b) };
   const items = labelItems(t), size = readSize(t);
   if (items.length) return { type: 'item', item: items[0], also: items.slice(1, 4), result: verdict(items[0], size) };
   if (batteryWords) return { type: 'battery', result: checkBattery(null) };

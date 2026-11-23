@@ -98,6 +98,18 @@ h2 { margin: 24px 0 8px; font: 800 12.5px/1.2 'Sora', sans-serif; letter-spacing
 .mybag .row small { display: block; color: var(--soft); font-weight: 600; font-size: 12.5px; }
 .mybag .row button { border: 0; background: none; color: #9AA4B2; font-size: 18px; width: 30px; }
 .mybag .clear { display: block; margin: 4px auto 6px; border: 0; background: none; color: var(--soft); font-weight: 700; font-size: 13px; text-decoration: underline; }
+.sizes { margin-top: 12px; background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 12px 14px; }
+.sizes b { display: block; font-size: 14.5px; margin-bottom: 6px; }
+.sizes button { margin: 4px 4px 0 0; border: 1.5px solid var(--line); background: #F4F7FC; border-radius: 10px; padding: 7px 12px; font-size: 14px; font-weight: 800; }
+.unknown { margin-top: 10px; background: var(--ambbg); border: 1.5px solid #F0C36A; border-radius: 16px; padding: 12px 14px; font-size: 14.5px; }
+.unknown b { display: block; font-size: 16px; }
+.unknown button { margin: 6px 6px 0 0; border: 1.5px solid #E4B75C; background: #fff; border-radius: 99px; padding: 6px 12px; font-size: 13.5px; font-weight: 800; }
+.unknown details { margin-top: 8px; color: var(--soft); font-size: 13px; }
+.unknown pre { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.45 ui-monospace, Menlo, monospace; }
+.mybag .lnote { margin: 2px 14px 8px; font-size: 13px; color: var(--soft); }
+.mybag .bagacts { display: flex; justify-content: space-between; align-items: center; padding: 4px 14px 8px; }
+.mybag .bagacts button { border: 0; background: none; font-weight: 800; font-size: 13.5px; color: var(--blue); }
+.mybag .bagacts .clear { color: var(--soft); font-weight: 700; text-decoration: underline; margin: 0; }
 .limits { margin-top: 26px; font-size: 13.5px; color: var(--soft); }
 .limits b { color: var(--ink); }
 .limits a { color: inherit; }
@@ -144,9 +156,10 @@ footer a { color: inherit; }
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="q" type="search" placeholder="Search: ghee, perfume, nail cutter…" autocomplete="off" aria-label="Search an item"></div>
     <div class="hits" id="hits"></div>
+    <div class="unknown" id="unknown" hidden></div>
 
     <h2>Power bank</h2>
-    <div class="pb"><input id="mah" inputmode="numeric" placeholder="20000" aria-label="Power bank capacity in mAh"><span>mAh</span><button id="mahGo" type="button">Check</button></div>
+    <div class="pb"><input id="mah" inputmode="text" placeholder="20000" aria-label="Power bank capacity in mAh (or Wh)"><span>mAh</span><button id="mahGo" type="button">Check</button></div>
 
     <h2>People ask about</h2>
     <div class="chips" id="chips"></div>
@@ -166,6 +179,7 @@ footer a { color: inherit; }
   <section id="result" hidden>
     <div class="ans" id="ans"></div>
     <div class="tip" id="tip" hidden></div>
+    <div class="sizes" id="sizes" hidden></div>
     <div class="alts" id="alts" hidden></div>
     <div class="acts">
       <button class="btn pri" id="addBtn" type="button">+ My bag</button>

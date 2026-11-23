@@ -67,4 +67,13 @@ ok(search('desiccated')[0].id === 'copra', 'search desiccated');
 ok(verdict(byId('perfume')).cabin === 'limit' && verdict(byId('perfume')).head === 'Up to 100 ml in the cabin', 'perfume without size');
 ok(classify('Lorem ipsum dolor').type === 'unknown', 'unknown text');
 for (const i of ITEMS) ok(i.kind === 'battery' || (i.cabin && i.checkin && i.why), 'every item has both answers and a why: ' + i.id);
+// bugs found on 23 Nov: uppercase MAH, a misread Wh, Wh-only labels, water advice, words people actually type
+b = readBattery('POWER BANK 20000MAH 3.7V'); ok(b && b.wh === 74, 'uppercase MAH: ' + JSON.stringify(b));
+b = readBattery('20000mAh 3.7V 174Wh'); ok(b && b.wh === 74 && b.from === 'mah', 'misread 174 Wh for a 20,000 mAh bank: ' + JSON.stringify(b));
+ok(classify('Rated energy 74Wh 3.7V').type === 'battery', 'a label with only Wh is a battery');
+ok(classify('Smartphone 5G 128 GB').type === 'unknown', '5G is not 5 grams of liquid');
+v = r('Packaged drinking water 1 L'); ok(v.id === 'water' && /empty/i.test(v.cabinNote) && v.head === 'Carry it empty', 'water: carry it empty');
+for (const [q, id] of [['namak', 'powders'], ['cheeni', 'powders'], ['daru', 'alcohol'], ['kesar', 'spices'], ['saffron', 'spices'], ['tiffin', 'dryfood'], ['lip balm', 'makeup'], ['earphones', 'devices'], ['tablets', 'meds'], ['nail', 'nailcutter']])
+  ok(search(q)[0]?.id === id, `search "${q}" -> ${id}, got ${search(q)[0]?.id}`);
+ok(r('Lemon tea\nTel: 022 1234 5678').id === 'tea', '"Tel:" on a label is not oil');
 console.log(fails ? `${fails} of ${n} checks FAILED` : `all ${n} checks passed`); process.exit(fails ? 1 : 0);
