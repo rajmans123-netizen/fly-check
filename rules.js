@@ -77,7 +77,7 @@ export const ITEMS = [
   { id: 'liquid', name: 'A liquid, cream or gel', kind: 'liquid', w: ['liquid', 'gel'], cabin: 'limit', checkin: 'yes', why: LIQ, src: 'K' },
   // ---- solid food
   { id: 'spices', name: 'Spices, masala, chilli powder', kind: 'solid',
-    w: ['spices', 'spice', 'masala', 'chilli', 'chili', 'mirchi', 'mirch', 'haldi', 'turmeric', 'garam masala', 'chilli powder', 'red chilli', 'pepper powder', 'kali mirch', 'jeera', 'cumin', 'dhania', 'coriander powder', 'hing', 'asafoetida', 'sambar powder', 'chaat masala', 'pav bhaji masala', 'biryani masala', 'cardamom', 'elaichi', 'cloves', 'laung', 'cinnamon', 'dalchini', 'saffron', 'kesar', 'saunf', 'fennel', 'ajwain', 'methi', 'rai', 'mustard seeds', 'black pepper', 'pepper', 'tej patta', 'bay leaf', 'star anise'],
+    w: ['spices', 'spice', 'masala', 'chilli', 'chili', 'mirchi', 'mirch', 'haldi', 'turmeric', 'garam masala', 'chilli powder', 'red chilli', 'pepper powder', 'kali mirch', 'jeera', 'cumin', 'dhania', 'coriander powder', 'hing', 'asafoetida', 'sambar powder', 'chaat masala', 'pav bhaji masala', 'biryani masala', 'cardamom', 'elaichi', 'cloves', 'laung', 'cinnamon', 'dalchini', 'saffron', 'kesar', 'saunf', 'fennel', 'thecha', 'chutney powder', 'red chilli garlic', 'mirchi powder', 'ajwain', 'methi', 'rai', 'mustard seeds', 'black pepper', 'pepper', 'tej patta', 'bay leaf', 'star anise'],
     cabin: 'no', checkin: 'yes', why: 'BCAS bans all spices in the cabin bag, powdered or whole, chilli included. Pack them in check-in.', src: 'K' },
   { id: 'powders', name: 'Salt, sugar, atta, besan', kind: 'solid', w: ['salt', 'iodised salt', 'iodized salt', 'sugar', 'atta', 'flour', 'maida', 'besan', 'rice flour', 'sooji', 'suji', 'rava', 'baking soda', 'jaggery', 'gud', 'cornflour', 'namak', 'cheeni', 'chini', 'shakkar', 'powder'],
     cabin: 'yes', checkin: 'yes',
@@ -122,7 +122,7 @@ const SEARCH_ONLY = new Set(['phone', 'mobile', 'camera', 'laptop', 'tablet', 't
   'bat', 'blade', 'blades', 'fork', 'dart', 'darts', 'water', 'oil', 'protein', 'gel', 'liquid', 'parfum', 'fragrance', 'mah', 'wh']);
 // things that are often an ingredient of something else (oil in pickle, butane in a deo, salt in namkeen): on a label they only win
 // when nothing more specific is named
-const WEAK = new Set(['coconut', 'oil', 'water', 'spices', 'powders', 'alcohol', 'liquid', 'fruit', 'gas', 'spread', 'flammable', 'meds']);
+const WEAK = new Set(['coconut', 'oil', 'water', 'spices', 'powders', 'alcohol', 'liquid', 'fruit', 'gas', 'spread', 'flammable', 'meds']);   // spices get a small bonus over other weak items: a chilli chutney is a chilli product
 export const POPULAR = [['powerbank', 'Power bank'], ['perfume', 'Perfume'], ['ghee', 'Ghee'], ['spices', 'Masala'], ['powders', 'Salt & sugar'], ['pickle', 'Achar'], ['copra', 'Dry coconut'], ['lighter', 'Lighter'], ['nailcutter', 'Nail cutter'], ['protein', 'Protein powder'], ['bat', 'Cricket bat'], ['syrupsweets', 'Rasgulla']];
 export const byId = id => ITEMS.find(i => i.id === id);
 
@@ -180,7 +180,7 @@ const RX_LABEL = ITEMS.map(i => ({ i, rx: i.w.filter(w => !SEARCH_ONLY.has(w)).m
 const norm = text => ' ' + String(text || '').toLowerCase().replace(/[^a-z0-9\- ]+/g, ' ').replace(/\s+/g, ' ') + ' ';
 function match(text, table, max) {
   const t = norm(text), hits = [];
-  for (const { i, rx } of table) { let best = 0; for (const { w, rx: r } of rx) if (r.test(t)) best = Math.max(best, w.length + (table === RX_LABEL && !WEAK.has(i.id) ? 20 : 0)); if (best) hits.push({ item: i, score: best }); }
+  for (const { i, rx } of table) { let best = 0; for (const { w, rx: r } of rx) if (r.test(t)) best = Math.max(best, w.length + (table === RX_LABEL && !WEAK.has(i.id) ? 20 : 0) + (table === RX_LABEL && i.id === 'spices' ? 8 : 0)); if (best) hits.push({ item: i, score: best }); }
   return hits.sort((a, b) => b.score - a.score).slice(0, max).map(h => h.item);
 }
 export const findItems = (text, max = 8) => match(text, RX_ALL, max);
@@ -235,10 +235,14 @@ export function classify(text) {
   const t = String(text || '');
   const b = readBattery(t);
   const batteryWords = /power\s*bank|powerbank|li[-\s]?ion|lithium|li[-\s]?polymer|\bmah\b|rated capacity|battery capacity|portable charger/i.test(cleanNumbers(t));
-  if (b && (batteryWords || b.mah || b.from === 'wh')) return { type: 'battery', result: checkBattery(b) };
+  if (b && (batteryWords || b.mah || (b.from === 'wh' && !b.vGuess && b.wh >= 10))) return { type: 'battery', result: checkBattery(b) };
   const items = labelItems(t), size = readSize(t);
   if (items.length) return { type: 'item', item: items[0], also: items.slice(1, 4), result: verdict(items[0], size) };
-  if (batteryWords) return { type: 'battery', result: checkBattery(null) };
+  if (batteryWords) {
+    const bare = [...cleanNumbers(t).matchAll(/(?<![\d.,])(\d{1,2}[,.]?\d{3}|\d{4,5})(?![\d.,]*\s*(?:v|w|a|mm|g|ml|%))/gi)].map(m => num(m[1].replace(/[.,]/g, ''))).filter(v => v >= 2000 && v <= 50000 && v % 500 === 0);
+    if (bare.length) { const mah = Math.max(...bare); return { type: 'battery', result: checkBattery({ wh: Math.round(mah * 3.7 / 100) / 10, mah, v: 3.7, vGuess: true, from: 'mah', bare: true }) }; }
+    return { type: 'battery', result: checkBattery(null) };
+  }
   if (size && /ml|l\b|ltr|litre/i.test(size.label)) return { type: 'item', item: byId('liquid'), also: [], result: verdict(byId('liquid'), size) };
   return { type: 'unknown', size };
 }

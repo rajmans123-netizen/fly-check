@@ -76,4 +76,10 @@ v = r('Packaged drinking water 1 L'); ok(v.id === 'water' && /empty/i.test(v.cab
 for (const [q, id] of [['namak', 'powders'], ['cheeni', 'powders'], ['daru', 'alcohol'], ['kesar', 'spices'], ['saffron', 'spices'], ['tiffin', 'dryfood'], ['lip balm', 'makeup'], ['earphones', 'devices'], ['tablets', 'meds'], ['nail', 'nailcutter']])
   ok(search(q)[0]?.id === id, `search "${q}" -> ${id}, got ${search(q)[0]?.id}`);
 ok(r('Lemon tea\nTel: 022 1234 5678').id === 'tea', '"Tel:" on a label is not oil');
+// from Raj's shoot (23 Nov): a Kolhapuri thecha (red chilli garlic chutney) read as a 3 Wh power bank or as a 100 ml spread; a power bank front with a bare 10000
+ok(classify('Kolhapuri Thecha\nRed Chilli Garlic Chutney\n3Wh').type === 'item', 'a stray "3Wh" on a food pack is not a power bank');
+v = r('Kolhapuri Thecha\nRed Chilli Garlic Chutney'); ok(v.id === 'spices' && v.cabin === 'no', 'chilli chutney / thecha -> spices, check-in only: ' + v.id);
+v = r('Garlic Chutney 200 g'); ok(v.id === 'spread', 'a plain chutney is still a spread: ' + v.id);
+c = cls('EnCase Mini\n10000\nPower Bank'); ok(c.type === 'battery' && c.result.b?.mah === 10000 && c.result.b.wh === 37, 'bare 10000 on a power bank = 10,000 mAh: ' + JSON.stringify(c.result.b));
+c = cls('Power Bank\nModel 2026\nMade in India'); ok(c.type === 'battery' && !c.result.b, 'a year is not a capacity');
 console.log(fails ? `${fails} of ${n} checks FAILED` : `all ${n} checks passed`); process.exit(fails ? 1 : 0);
